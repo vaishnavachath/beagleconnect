@@ -114,10 +114,12 @@ jobs:
       - name: Prepare Release
         id: prepare
         if: startsWith(github.ref, 'refs/tags/')
+        env:
+          TAG: ${{ steps.prepare.outputs.TAG }}
         run: |
           echo "::set-output name=TAG::${GITHUB_REF#refs/tags/}"
           cd sw/
-          zip -r bcf-${TAG}.zip build
+          zip -r ${{ env.TAG }}.zip build
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
@@ -126,4 +128,4 @@ jobs:
           TAG: ${{ steps.prepare.outputs.TAG }}
         with:
           files: |
-            sw/bcf-${{ env.TAG }}.zip
+            sw/${{ env.TAG }}.zip
